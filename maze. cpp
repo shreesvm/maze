@@ -1,0 +1,422 @@
+#include<iostream.h>
+
+#include<graphics.h>
+
+#include<conio.h>
+
+#include<stdlib.h>
+
+#include<dos.h>
+
+#include<process.h>
+
+#include<math.h>
+
+void heading();
+
+void instruc();
+
+void bubble();
+
+void move();
+
+int cx,cy,q,l,k;
+
+class mouse
+
+{
+
+        REGS regs;
+
+        int no_buttons;
+
+    public:
+
+        void show_mouse();
+
+        void get_status();
+
+        void hide_mouse();
+
+        mouse()
+
+        {
+
+            regs.x.ax=0;
+
+            int86(0x33,&regs,&regs);
+
+            if(regs.x.ax==0xfff)no_buttons=regs.x.bx;
+
+            //cout<<"Error initializing mouse";
+
+        }
+
+}m;
+
+void mouse::show_mouse()
+
+{
+
+    regs.x.ax=0x01;
+
+    int86(0x33,&regs,&regs);
+
+}
+
+void mouse::hide_mouse()
+
+{
+
+    regs.x.ax=0x02;
+
+    int86(0x33,&regs,&regs);
+
+ }
+
+ void mouse::get_status()
+
+ {
+
+    regs.x.ax=0x03;
+
+    int86(0x33,&regs,&regs);
+
+    while(q!=1)
+
+    {
+
+        regs.x.ax=0x03;
+
+        int86(0x33,&regs,&regs);
+
+        q=regs.x.bx;
+
+        cx=regs.x.cx;
+
+        cy=regs.x.dx;
+
+    }
+
+        q=0;
+
+ }
+
+void heading()
+
+{
+
+    m.hide_mouse();
+
+    int gd=9;int gm=2;
+
+    initgraph(&gd,&gm,"C:\\turboc3\\bgi");
+
+    setbkcolor(1);
+
+    ellipse(320,220,0,360,200,200);
+
+    setcolor(5);
+
+    line(150,150,490,150);
+
+    setcolor(34);
+
+    circle(320,220,50);
+
+    floodfill(320,220,GREEN);
+
+    settextstyle(1,0,5);
+
+    outtextxy(160,100,"BALL SHOOTER");
+
+    rectangle(250,300,390,360);
+
+    settextstyle(10,0,3);
+
+    outtextxy(260,300,"PLAY");
+
+    settextstyle(1,0,2);
+
+    rectangle(250,410,390,380);
+
+    outtextxy(250,380,"INSTRUCTIONS");
+
+    m.show_mouse();
+
+    m.get_status();
+
+    if(((cx<=390)&&(cx>=250)&&(cy<=360)&&(cy>=300)))
+
+    {       m.show_mouse();
+
+        bubble();
+
+        m.hide_mouse();
+
+      }
+
+    if(((cx>=250)&&(cx<=390)&&(cy>=380)&&(cy<=410)))
+
+     {
+
+            m.show_mouse();
+
+               instruc();
+
+               m.hide_mouse();
+
+     }
+
+    getch();
+
+    closegraph();
+
+   }
+
+void instruc()
+
+{
+
+    m.hide_mouse();
+
+    int a=9;int b=2;
+
+    initgraph(&a,&b,"C:\\TURBOC3\\BGI");
+
+    setfillstyle(1,BLUE);
+
+    settextstyle(1,0,5);
+
+    outtextxy(50,50,"INSTRUCTION");
+
+    settextstyle(6,0,1);
+
+    outtextxy(0,90,"1.CLICK THE BUTTON PLAY TO START THE GAME");
+
+    outtextxy(0,115,"2.THE GOAL OF THE GAME IS TO CLEAR  COLOURED BALLS ");
+
+    outtextxy(0,155,"3.USE ARROW KEYS TO SHOOT THE BALL TO THE SPECIFIC COLOUR TO     
+
+    GAIN POINTS”);
+
+    outtextxy(0,180,"4.THE MORE BALLS GET CLEARED THE MORE POINTS YOU GAIN");
+
+    outtextxy(0,205,"5.IF THE BALL MISSES TO HIT THE SPECIFIC COLOUR THEN IT IS COUNTED 
+
+    AS  A “);
+
+    outtextxy(0,220,"  MISTAKE");
+
+    outtextxy(0,245,"6.IF IT IS MORE THAN 3 MISTAKES THEN THE GAME IS OVER");
+
+    outtextxy(0,270,"7.THE PLAYER WINS WHEN THERE IS NO BALLS REMAINING IN THE 
+
+    SCREEN”);
+
+    outtextxy(0,300,"8.PRESS THE PLAY BUTTON ONCE MORE PLAY THE GAME AGAIN");
+
+    setcolor(4);
+
+    circle(150,390,50);
+
+    setcolor(1);
+
+    circle(250,390,50);
+
+    setcolor(2);
+
+    circle(350,390,50);
+
+    setcolor(3);
+
+    circle(450,390,50);
+
+    settextstyle(2,0,5);
+
+    outtextxy(550,420,"GO BACK");
+
+    rectangle(540,415,610,440);
+
+    m.show_mouse();
+
+    m.get_status();
+
+    if(((cx>=540)&&(cx<=610)&&(cy>=415)&&(cy<=440)))
+
+     {
+
+            m.show_mouse();
+
+               heading();
+
+               m.hide_mouse();
+
+     }
+
+    getch();
+
+    closegraph();
+
+}
+
+void bubble()
+
+{
+
+    m.hide_mouse();
+
+    clrscr();
+
+    int a=VGA,b=VGAHI;
+
+    int C,ch,i=257,j=430,r1=10,r2=10,x=0,y=0;
+
+    initgraph(&a,&b,"C:\\TURBOC3\\BGI");
+
+    setfillstyle(1,BLUE);
+
+    bar(0,0,getmaxx(),getmaxy());
+
+    setfillstyle(1,5);
+
+for(l=20;l<450;l+=20)
+
+    {
+
+            for(k=50;k<250;k+=20)
+
+           {    circle(l,k,r1);
+
+            C=random(5);
+
+            setfillstyle(1,C);
+
+            floodfill(l,k,WHITE);
+
+         }
+
+    }
+
+    rectangle(485,470,630,10);
+
+    floodfill(560,390,WHITE);
+
+    outtextxy(520,50,"SCOREBOARD");
+
+    outtextxy(530,200,"MISTAKES");
+
+    line(0,400,485,400);
+
+    settextstyle(10,0,5);
+
+    outtextxy(540,200,"0");
+
+    settextstyle(2,0,5);
+
+    outtextxy(496,410,"press esc to exit ");
+
+    circle(257,430,10);
+
+    int c=random(5);
+
+    setfillstyle(1,c);
+
+    floodfill(257,430,WHITE);
+
+    while(i)
+
+    {
+
+        ch=getch();
+
+        setcolor(WHITE);
+
+        circle(i+x,j+y,r2);
+
+        setfillstyle(1,c);
+
+        floodfill(i+x,j+y,WHITE);
+
+        delay(20);
+
+        setcolor(BLUE);
+
+        circle(i+x,j+y,r2);
+
+        setfillstyle(1,BLUE);
+
+        floodfill(i+x,j+y,BLUE);
+
+        switch(ch)
+
+        {
+
+            case 77   : x++; break;//RIGHT
+
+            case 75   : x--; break;//LEFT
+
+            case 72   : y--; break;//UP
+
+            case 27      : exit(0);break; // TO EXIT THE GAME
+
+        }
+
+        }
+
+        line(0,400,485,400);
+
+        setcolor(WHITE);
+
+        circle(i+x,j+y,r2);
+
+        setfillstyle(1,c);
+
+        floodfill(i+x,j+y,WHITE);
+
+        line(0,400,485,400);
+
+        int d=sqrt((pow((l-i),2))+(pow((k-j),2)));
+
+        if((fabs(r1+r2==d))&&(c==C))
+
+        {
+
+            setcolor(0);
+
+            circle(l,k,r1);
+
+            setfillstyle(1,0);
+
+            floodfill(l,k,BLACK);
+
+            setcolor(0);
+
+            circle(i,j,r2);
+
+            setfillstyle(1,0);
+
+            floodfill(i,j,BLACK);
+
+          }
+
+    
+
+    getch();
+
+    closegraph();
+
+}
+
+void main()
+
+{
+
+    clrscr();
+
+    heading();
+
+    getch();
+
+}
+
